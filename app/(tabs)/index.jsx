@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../config/firebase";
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
 export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -11,69 +11,118 @@ export default function RegisterScreen({ navigation }) {
   const [inviteCode, setInviteCode] = useState("");
 
   const handleRegister = async () => {
-    try {
+  try {
+    console.log("Register button pressed, role:", role);
+
+    // Basic input validation
+    if (!email.trim() || !password.trim()) {
+      Alert.alert("Error", "Please enter email and password");
+      return;
+    }
+
+    if (role === "patient") {
+      if (!inviteCode.trim()) {
+        Alert.alert("Invite Code Required", "Please enter the invite code from your caregiver.");
+        return;
+      }
+
+      console.log("Checking invite:", inviteCode);
+
+      const inviteRef = doc(db, "invites", inviteCode.trim());
+      const caregiverSnap = await getDoc(inviteRef);
+
+      if (!caregiverSnap.exists()) {
+        console.log("Invalid invite code");
+        Alert.alert("Invalid Code", "This invite code does not exist.");
+        return;
+      }
+
+      const caregiverId = caregiverSnap.data().caregiverId;
+      console.log("Invite valid, caregiverId:", caregiverId);
+
       const res = await createUserWithEmailAndPassword(auth, email, password);
       const uid = res.user.uid;
 
-      if (role === "caregiver") {
-        await setDoc(doc(db, "users", uid), {
-          uid,
-          email,
-          role: "caregiver",
-        });
-        navigation.replace("CaregiverDashboard");
-      } else {
-        if (!inviteCode) {
-          Alert.alert("Invite Code Required", "Please enter the invite code from your caregiver.");
-          return;
-        }
+      console.log("Patient account created:", uid);
 
-        // find caregiver with this inviteCode
-        const caregiverSnap = await getDoc(doc(db, "invites", inviteCode));
-        if (!caregiverSnap.exists()) {
-          Alert.alert("Invalid Code", "This invite code is not valid.");
-          return;
-        }
+      await setDoc(doc(db, "users", uid), {
+        uid,
+        email,
+        role: "patient",
+        caregiverId,
+      });
 
-        const caregiverId = caregiverSnap.data().caregiverId;
+      await updateDoc(doc(db, "users", caregiverId), {
+        patients: arrayUnion(uid),
+      });
 
-        await setDoc(doc(db, "users", uid), {
-          uid,
-          email,
-          role: "patient",
-          caregiverId,
-        });
+      Alert.alert("Success", "You are now linked to your caregiver.");
+      navigation.replace("Drawer");
+    } else {
+      console.log("Registering caregiver");
 
-        // add patient to caregiver's patients list
-        await updateDoc(doc(db, "users", caregiverId), {
-          patients: [uid], // in production merge arrayUnion
-        });
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = res.user.uid;
 
-        navigation.replace("PatientDashboard");
-      }
-    } catch (e) {
-      Alert.alert("Error", e.message);
+      await setDoc(doc(db, "users", uid), {
+        uid,
+        email,
+        role: "caregiver",
+        patients: [],
+      });
+
+      Alert.alert("Success", "Caregiver account created.");
+      navigation.replace("Drawer");
     }
-  };
+  } catch (e) {
+    console.error("Register error:", e);
+    Alert.alert("Error", e.message);
+  }
+};
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
 
-      <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.input} />
-      <TextInput placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} style={styles.input} />
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+        style={styles.input}
+      />
 
       <View style={{ flexDirection: "row", marginVertical: 10 }}>
-        <TouchableOpacity onPress={() => setRole("caregiver")} style={[styles.roleBtn, role === "caregiver" && styles.active]}>
+        <TouchableOpacity
+          onPress={() => setRole("caregiver")}
+          style={[styles.roleBtn, role === "caregiver" && styles.active]}
+        >
           <Text>Caregiver</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setRole("patient")} style={[styles.roleBtn, role === "patient" && styles.active]}>
+        <TouchableOpacity
+          onPress={() => setRole("patient")}
+          style={[styles.roleBtn, role === "patient" && styles.active]}
+        >
           <Text>Patient</Text>
         </TouchableOpacity>
       </View>
 
       {role === "patient" && (
-        <TextInput placeholder="Invite Code" value={inviteCode} onChangeText={setInviteCode} style={styles.input} />
+        <TextInput
+          placeholder="Invite Code"
+          value={inviteCode}
+          onChangeText={setInviteCode}
+          style={styles.input}
+        />
       )}
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>

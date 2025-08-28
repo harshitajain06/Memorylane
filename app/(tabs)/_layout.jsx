@@ -233,7 +233,7 @@ export default function StackLayout() {
         ) : (
           <>
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
           </>
         )}
       </Stack.Navigator>
