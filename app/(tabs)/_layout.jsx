@@ -1,34 +1,32 @@
 // src/navigation/StackLayout.jsx
 
-import React, { useEffect, useState } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
-import { View, ActivityIndicator, Alert } from "react-native";
-import { signOut } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
+import { useNavigation } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, View } from "react-native";
 
-import CaregiverDashboard from './CaregiverDashboard';
-import PatientDashboard from './PatientDashboard';
-import LoginScreen from './LoginScreen';
-import InviteScreen from './InviteScreen';
-import RegisterScreen from './index';
 import AiChat from './AiChat';
+import CaregiverDashboard from './CaregiverDashboard';
 import CaregiverTaskReminder from './CaregiverTaskReminder';
 import CreateMemoryJournal from './CreateMemoryJournal';
 import FetchImages from './FetchImages';
 import FetchMemoryJournal from './FetchMemoryJournal';
 import GameZone from './GameZone';
+import LandingScreen from './index';
+import LoginScreen from './LoginScreen';
+import PatientDashboard from './PatientDashboard';
 import PatientTaskReminder from './PatientTaskReminder';
-import ProfileScreen from './ProfileScreen';
+import RegisterScreen from './RegisterScreen';
 import UploadImages from './UploadImages';
 
+import { auth } from '../../config/firebase';
 import { Colors } from "../../constants/Colors";
 import { useColorScheme } from "../../hooks/useColorScheme";
-import { auth } from '../../config/firebase';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -78,7 +76,6 @@ const CaregiverTabs = () => {
       <Tab.Screen name="CaregiverDashboard" component={CaregiverDashboard} />
       <Tab.Screen name="CaregiverTaskReminder" component={CaregiverTaskReminder} />
       <Tab.Screen name="UploadImages" component={UploadImages} />
-      <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
       <Tab.Screen name="FetchImages" component={FetchImages} />
     </Tab.Navigator>
   );
@@ -131,7 +128,7 @@ const PatientTabs = () => {
       <Tab.Screen name="FetchImages" component={FetchImages} />
       <Tab.Screen name="GameZone" component={GameZone} />
       <Tab.Screen name="PatientTaskReminder" component={PatientTaskReminder} />
-      <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
+      
 
     </Tab.Navigator>
   );
@@ -143,7 +140,7 @@ const DrawerNavigator = ({ role }) => {
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
-        navigation.replace("RegisterScreen");
+        navigation.replace("LandingScreen");
       })
       .catch((err) => {
         console.error("Logout Error:", err);
@@ -232,6 +229,7 @@ export default function StackLayout() {
           </Stack.Screen>
         ) : (
           <>
+            <Stack.Screen name="LandingScreen" component={LandingScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
           </>
