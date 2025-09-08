@@ -73,10 +73,9 @@ const CaregiverTabs = () => {
         },
       })}
     >
-      <Tab.Screen name="CaregiverDashboard" component={CaregiverDashboard} />
-      <Tab.Screen name="CaregiverTaskReminder" component={CaregiverTaskReminder} />
-      <Tab.Screen name="UploadImages" component={UploadImages} />
-      <Tab.Screen name="FetchImages" component={FetchImages} />
+      <Tab.Screen name="Dashboard" component={CaregiverDashboard} />
+      <Tab.Screen name="Task Reminder" component={CaregiverTaskReminder} />
+      <Tab.Screen name="Add Images" component={UploadImages} />
     </Tab.Navigator>
   );
 };
@@ -121,13 +120,13 @@ const PatientTabs = () => {
         },
       })}
     >
-      <Tab.Screen name="PatientDashboard" component={PatientDashboard} />
-      <Tab.Screen name="AiChat" component={AiChat} />
-      <Tab.Screen name="CreateMemoryJournal" component={CreateMemoryJournal} />
-      <Tab.Screen name="FetchMemoryJournal" component={FetchMemoryJournal} />
-      <Tab.Screen name="FetchImages" component={FetchImages} />
-      <Tab.Screen name="GameZone" component={GameZone} />
-      <Tab.Screen name="PatientTaskReminder" component={PatientTaskReminder} />
+      <Tab.Screen name="Dashboard" component={PatientDashboard} />
+      <Tab.Screen name="Ai Chat" component={AiChat} />
+      <Tab.Screen name="Create Memory Journal" component={CreateMemoryJournal} />
+      <Tab.Screen name=" View Memory Journal" component={FetchMemoryJournal} />
+      <Tab.Screen name="Memories" component={FetchImages} />
+      <Tab.Screen name="Game Zone" component={GameZone} />
+      <Tab.Screen name="Task Reminder" component={PatientTaskReminder} />
       
 
     </Tab.Navigator>
