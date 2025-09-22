@@ -226,33 +226,6 @@ export default function CaregiverDashboard() {
           </View>
         </View>
 
-        {/* Quick Actions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.quickActions}>
-            <TouchableOpacity 
-              style={styles.actionButton}
-              onPress={() => navigation.navigate('CaregiverTaskReminder')}
-            >
-              <Ionicons name="add-circle" size={24} color="#4A90E2" />
-              <Text style={styles.actionText}>Add Task</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.actionButton}
-              onPress={() => navigation.navigate('UploadImages')}
-            >
-              <Ionicons name="camera" size={24} color="#9b59b6" />
-              <Text style={styles.actionText}>Share Memory</Text>
-            </TouchableOpacity>
-      <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => navigation.navigate('InviteScreen')}
-            >
-              <Ionicons name="people" size={24} color="#27ae60" />
-              <Text style={styles.actionText}>Manage Patients</Text>
-      </TouchableOpacity>
-    </View>
-        </View>
       </View>
     </ScrollView>
   );
@@ -464,33 +437,5 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     textAlign: 'center',
     paddingVertical: 20,
-  },
-  quickActions: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  actionButton: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
-    alignItems: 'center',
-    ...Platform.select({
-      web: {
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease',
-        '&:hover': {
-          transform: 'translateY(-2px)',
-        },
-      },
-    }),
-  },
-  actionText: {
-    fontSize: 12,
-    color: '#2c3e50',
-    fontWeight: '500',
-    marginTop: 8,
-    textAlign: 'center',
   },
 });

@@ -2,14 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  Platform,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
+    ActivityIndicator,
+    Platform,
+    RefreshControl,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import { auth, db } from '../../config/firebase';
 
@@ -377,40 +377,6 @@ export default function PatientDashboard({ navigation }) {
           </View>
         </View>
 
-        {/* Quick Actions */}
-        <View style={styles.quickActions}>
-          <Text style={styles.quickActionsTitle}>Quick Actions</Text>
-          <View style={styles.actionsGrid}>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => navigation.navigate('CreateMemoryJournal')}
-            >
-              <Ionicons name="create" size={24} color="#fff" />
-              <Text style={styles.actionText}>New Journal</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => navigation.navigate('AiChat')}
-            >
-              <Ionicons name="chatbubbles" size={24} color="#fff" />
-              <Text style={styles.actionText}>Chat</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => navigation.navigate('GameZone')}
-            >
-              <Ionicons name="game-controller" size={24} color="#fff" />
-              <Text style={styles.actionText}>Play Games</Text>
-            </TouchableOpacity>
-      <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => navigation.navigate('PatientTaskReminder')}
-            >
-              <Ionicons name="checkmark-done" size={24} color="#fff" />
-              <Text style={styles.actionText}>View Tasks</Text>
-      </TouchableOpacity>
-    </View>
-        </View>
 
       </View>
     </ScrollView>
@@ -679,39 +645,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
-  },
-  quickActions: {
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  quickActionsTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#567396',
-    marginBottom: 12,
-  },
-  actionsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  actionButton: {
-    flex: 1,
-    minWidth: '45%',
-    backgroundColor: '#567396',
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    ...Platform.select({
-      web: {
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-      },
-    }),
-  },
-  actionText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-    marginTop: 8,
   },
 });
