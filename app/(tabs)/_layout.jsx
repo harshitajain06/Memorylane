@@ -46,28 +46,12 @@ const CaregiverTabs = () => {
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === "CaregiverDashboard") {
+          if (route.name === "Dashboard") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "CaregiverTaskReminder") {
+          } else if (route.name === "Task Reminder") {
             iconName = focused ? "book" : "book-outline";
-          } else if (route.name === "InviteScreen") {
-            iconName = focused ? "people" : "people-outline";
-          } else if (route.name === "ProfileScreen") {
-            iconName = focused ? "person" : "person-outline";
-          } else if (route.name === "AiChat") {
-            iconName = focused ? "chatbubbles" : "chatbubbles-outline";
-          } else if (route.name === "CreateMemoryJournal") {
-            iconName = focused ? "create" : "create-outline";
-          } else if (route.name === "FetchMemoryJournal") {
-            iconName = focused ? "document-text" : "document-text-outline";
-          } else if (route.name === "UploadImages") {
+          } else if (route.name === "Add Images") {
             iconName = focused ? "cloud-upload" : "cloud-upload-outline";
-          } else if (route.name === "FetchImages") {
-            iconName = focused ? "images" : "images-outline";
-          } else if (route.name === "GameZone") {
-            iconName = focused ? "game-controller" : "game-controller-outline";
-          } else if (route.name === "PatientTaskReminder") {
-            iconName = focused ? "checkmark-done" : "checkmark-done-outline";
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -93,27 +77,19 @@ const PatientTabs = () => {
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === "CaregiverDashboard") {
+          if (route.name === "Dashboard") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "CaregiverTaskReminder") {
-            iconName = focused ? "book" : "book-outline";
-          } else if (route.name === "InviteScreen") {
-            iconName = focused ? "people" : "people-outline";
-          } else if (route.name === "ProfileScreen") {
-            iconName = focused ? "person" : "person-outline";
-          } else if (route.name === "AiChat") {
+          } else if (route.name === "Ai Chat") {
             iconName = focused ? "chatbubbles" : "chatbubbles-outline";
-          } else if (route.name === "CreateMemoryJournal") {
+          } else if (route.name === "Create Memory Journal") {
             iconName = focused ? "create" : "create-outline";
-          } else if (route.name === "FetchMemoryJournal") {
+          } else if (route.name === " View Memory Journal") {
             iconName = focused ? "document-text" : "document-text-outline";
-          } else if (route.name === "UploadImages") {
-            iconName = focused ? "cloud-upload" : "cloud-upload-outline";
-          } else if (route.name === "FetchImages") {
+          } else if (route.name === "Memories") {
             iconName = focused ? "images" : "images-outline";
-          } else if (route.name === "GameZone") {
+          } else if (route.name === "Game Zone") {
             iconName = focused ? "game-controller" : "game-controller-outline";
-          } else if (route.name === "PatientTaskReminder") {
+          } else if (route.name === "Task Reminder") {
             iconName = focused ? "checkmark-done" : "checkmark-done-outline";
           }
           return <Ionicons name={iconName} size={size} color={color} />;

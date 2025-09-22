@@ -13,6 +13,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { getAPIKey } from '../../utils/apiKeyManager';
 
 const { width, height } = Dimensions.get('window');
 
@@ -21,6 +22,8 @@ const AiChat = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [apiKey, setApiKey] = useState(null);
+  const [apiKeyError, setApiKeyError] = useState(false);
   const scrollViewRef = useRef(null);
 
   const quickActions = [
@@ -32,8 +35,6 @@ const AiChat = () => {
     { text: "I want to talk about my family", emoji: "👨‍👩‍👧‍👦" }
   ];
 
-  const API_KEY = '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';
-
   useEffect(() => {
     // Add welcome message from caregiver
     setMessages([
@@ -44,6 +45,24 @@ const AiChat = () => {
         timestamp: new Date(),
       }
     ]);
+
+    // Fetch API key from Firebase
+    const fetchAPIKey = async () => {
+      try {
+        const key = await getAPIKey();
+        if (key) {
+          setApiKey(key);
+          setApiKeyError(false);
+        } else {
+          setApiKeyError(true);
+        }
+      } catch (error) {
+        console.error('Error fetching API key:', error);
+        setApiKeyError(true);
+      }
+    };
+
+    fetchAPIKey();
   }, []);
 
   const sendQuickMessage = (messageText) => {
@@ -52,6 +71,18 @@ const AiChat = () => {
 
   const sendMessage = async () => {
     if (!inputText.trim() || isLoading) return;
+
+    // Check if API key is available
+    if (!apiKey) {
+      const errorMessage = {
+        id: Date.now() + 1,
+        text: "I'm having trouble connecting to my services right now. Please try again in a moment. 💕",
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      return;
+    }
 
     const userMessage = {
       id: Date.now(),
@@ -69,7 +100,7 @@ const AiChat = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`,
+          'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
           model: 'gpt-3.5-turbo',
@@ -269,23 +300,39 @@ Always respond as their caring digital family caregiver who truly cares about th
       </View>
 
       <View style={styles.inputContainer}>
+        {apiKeyError && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>
+              ⚠️ Service temporarily unavailable. Please try again later.
+            </Text>
+          </View>
+        )}
         <TextInput
-          style={styles.textInput}
+          style={[
+            styles.textInput,
+            (!apiKey || apiKeyError) && styles.textInputDisabled
+          ]}
           value={inputText}
           onChangeText={setInputText}
-          placeholder="Tell your caregiver how you're feeling..."
+          placeholder={
+            !apiKey 
+              ? "Loading services..." 
+              : apiKeyError 
+                ? "Service unavailable" 
+                : "Tell your caregiver how you're feeling..."
+          }
           placeholderTextColor="#999"
           multiline
           maxLength={1000}
-          editable={!isLoading}
+          editable={!isLoading && apiKey && !apiKeyError}
         />
         <TouchableOpacity
           style={[
             styles.sendButton,
-            (!inputText.trim() || isLoading) && styles.sendButtonDisabled
+            (!inputText.trim() || isLoading || !apiKey || apiKeyError) && styles.sendButtonDisabled
           ]}
           onPress={sendMessage}
-          disabled={!inputText.trim() || isLoading}
+          disabled={!inputText.trim() || isLoading || !apiKey || apiKeyError}
         >
           {isLoading ? (
             <ActivityIndicator size="small" color="#fff" />
@@ -410,6 +457,22 @@ const styles = StyleSheet.create({
     borderTopColor: '#e0e0e0',
     alignItems: 'flex-end',
   },
+  errorContainer: {
+    position: 'absolute',
+    top: -30,
+    left: 15,
+    right: 15,
+    backgroundColor: '#ffebee',
+    padding: 8,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#f44336',
+  },
+  errorText: {
+    color: '#d32f2f',
+    fontSize: 12,
+    fontWeight: '500',
+  },
   textInput: {
     flex: 1,
     borderWidth: 1,
@@ -421,6 +484,11 @@ const styles = StyleSheet.create({
     maxHeight: 100,
     fontSize: 16,
     backgroundColor: '#f9f9f9',
+  },
+  textInputDisabled: {
+    backgroundColor: '#f5f5f5',
+    borderColor: '#ccc',
+    color: '#999',
   },
   sendButton: {
     backgroundColor: '#567396',
